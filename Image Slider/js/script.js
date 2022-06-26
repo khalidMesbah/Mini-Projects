@@ -39,7 +39,7 @@ const currentSlide = (index) => {
 const checkFirstOrLast = (i) => {
     if (i <= 1) prevEl.classList.add(`disabled`);
     else prevEl.classList.remove(`disabled`);
-    if (i >= 5) nextEl.classList.add(`disabled`);
+    if (i >= numberOfSliderImages) nextEl.classList.add(`disabled`);
     else nextEl.classList.remove(`disabled`);
 };
 
@@ -71,16 +71,17 @@ checkFirstOrLast(currentSlideIndex);
 currentSlide(currentSlideIndex);
 
 // auto switching slides
-let intervalid;
-const autoMovingSlides = () => {
-    intervalid = setInterval(() => {
-        checkFirstOrLast(++currentSlideIndex);
-        currentSlide(currentSlideIndex);
-        if (currentSlideIndex >= 5) currentSlideIndex = 0;
+let focus = false;
+(function () {
+    setInterval(() => {
+        if (!focus) {
+            checkFirstOrLast(++currentSlideIndex);
+            currentSlide(currentSlideIndex);
+            if (currentSlideIndex >= numberOfSliderImages) currentSlideIndex = 0;
+        }
     }, 1500);
-};
-autoMovingSlides();
-window.onclick = () => {
-    clearInterval(intervalid);
-    setTimeout(autoMovingSlides, 5000);
-};
+})();
+setInterval(() => {
+    if (focus) focus = false;
+}, 5000);
+window.onclick = () => focus = true;
